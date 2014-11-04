@@ -30,18 +30,19 @@
 
 
 #include "Marlin.h"
-#include "ultralcd.h"
+//#include "ultralcd.h"
 #include "temperature.h"
 #include "watchdog.h"
 
-#include "Sd2PinMap.h"
+//#include "Sd2PinMap.h"
 
 
 //===========================================================================
 //=============================public variables============================
 //===========================================================================
 
-#ifndef OPENPNP
+#ifndef OPENPNP //this comments out the whole file
+
 int target_temperature[EXTRUDERS] = { 0 };
 int target_temperature_bed = 0;
 int current_temperature_raw[EXTRUDERS] = { 0 };

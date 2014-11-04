@@ -27,9 +27,9 @@
 #ifndef OPENPNP
 #include "temperature.h"
 #endif //OPENPNP
-#include "ultralcd.h"
+//#include "ultralcd.h"
 #include "language.h"
-#include "cardreader.h"
+//#include "cardreader.h"
 #include "speed_lookuptable.h"
 #if defined(DIGIPOTSS_PIN) && DIGIPOTSS_PIN > -1
 #include <SPI.h>
@@ -179,15 +179,15 @@ void checkHitEndstops()
    SERIAL_ECHOPGM(MSG_ENDSTOPS_HIT);
    if(endstop_x_hit) {
      SERIAL_ECHOPAIR(" X:",(float)endstops_trigsteps[X_AXIS]/axis_steps_per_unit[X_AXIS]);
-     LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "X");
+     //LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "X");
    }
    if(endstop_y_hit) {
      SERIAL_ECHOPAIR(" Y:",(float)endstops_trigsteps[Y_AXIS]/axis_steps_per_unit[Y_AXIS]);
-     LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "Y");
+     //LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "Y");
    }
    if(endstop_z_hit) {
      SERIAL_ECHOPAIR(" Z:",(float)endstops_trigsteps[Z_AXIS]/axis_steps_per_unit[Z_AXIS]);
-     LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "Z");
+     //LCD_MESSAGEPGM(MSG_ENDSTOPS_HIT "Z");
    }
    SERIAL_ECHOLN("");
    endstop_x_hit=false;
@@ -978,7 +978,7 @@ void st_synchronize()
     manage_heater();
 #endif //OPENPNP
     manage_inactivity();
-    lcd_update();
+    //lcd_update();
   }
 }
 

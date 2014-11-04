@@ -57,7 +57,7 @@
 #ifndef OPENPNP
 #include "temperature.h"
 #endif //OPENPNP
-#include "ultralcd.h"
+//#include "ultralcd.h"
 #include "language.h"
 
 //===========================================================================
@@ -551,7 +551,7 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
     manage_heater(); 
 #endif //OPENPNP
     manage_inactivity(); 
-    lcd_update();
+    //lcd_update();
   }
 
 #ifdef ENABLE_AUTO_BED_LEVELING

@@ -36,14 +36,14 @@
   #endif
 #endif // ENABLE_AUTO_BED_LEVELING
 
-#include "ultralcd.h"
+//#include "ultralcd.h"
 #include "planner.h"
 #include "stepper.h"
 #ifndef OPENPNP
 #include "temperature.h"
 #endif //OPENPNP
 #include "motion_control.h"
-#include "cardreader.h"
+//#include "cardreader.h"
 #include "watchdog.h"
 #include "ConfigurationStore.h"
 #include "language.h"
@@ -582,8 +582,8 @@ void setup()
   servo_init();
   
 
-  lcd_init();
-  _delay_ms(1000);	// wait 1sec to display the splash screen
+  //lcd_init();
+  //_delay_ms(1000);	// wait 1sec to display the splash screen
 
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
@@ -596,6 +596,16 @@ void setup()
   pinMode(SERVO0_PIN, OUTPUT);
   digitalWrite(SERVO0_PIN, LOW); // turn it off
 #endif // Z_PROBE_SLED
+
+#ifndef OPENPNP
+  //Initialize the digital outptus for OpenPnP.
+  pinMode(E0_VACUUM_PIN,OUTPUT);
+  pinMode(E1_VACUUM_PIN,OUTPUT);
+  pinMode(ACTUATOR_PIN,OUTPUT);
+  digitalWrite(E0_VACUUM_PIN,LOW);
+  digitalWrite(E1_VACUUM_PIN,LOW);
+  digitalWrite(ACTUATOR_PIN,LOW);
+#endif //OPENPNP
 }
 
 
@@ -645,7 +655,7 @@ void loop()
 #endif //OPENPNP
   manage_inactivity();
   checkHitEndstops();
-  lcd_update();
+  //lcd_update();
 }
 
 void get_command()
@@ -736,7 +746,7 @@ void get_command()
             }
             else {
               SERIAL_ERRORLNPGM(MSG_ERR_STOPPED);
-              LCD_MESSAGEPGM(MSG_STOPPED);
+              //LCD_MESSAGEPGM(MSG_STOPPED);
             }
             break;
           default:
@@ -1383,7 +1393,7 @@ void process_commands()
       break;
 #endif
     case 4: // G4 dwell
-      LCD_MESSAGEPGM(MSG_DWELL);
+      //LCD_MESSAGEPGM(MSG_DWELL);
       codenum = 0;
       if(code_seen('P')) codenum = code_value(); // milliseconds to wait
       if(code_seen('S')) codenum = code_value() * 1000; // seconds to wait
@@ -1396,7 +1406,7 @@ void process_commands()
         manage_heater();
 #endif //OPENPNP
         manage_inactivity();
-        lcd_update();
+        //lcd_update();
       }
       break;
       #ifdef FWRETRACT
@@ -1896,8 +1906,38 @@ void process_commands()
     }
     break;
 #endif
+
+#ifdef OPENPNP
+    case 4: //M4 Pick (vacuum on)
+    {
+      //Turn on vacuum
+      digitalWrite(E0_VACUUM_PIN,HIGH);
+      //TODO: Add params here to select E1 or E1 vacuum
+    }
+    break;
+    case 5: //M5 Place (vacuum off)
+    {
+      //Turn off vacuum
+      digitalWrite(E0_VACUUM_PIN,LOW);
+      //TODO: Add params here to select E1 or E1 vacuum
+    }
+    break;
+    case 8: //M8 Actuate ON (drag pin down)
+    {
+      //Turn off vacuum
+      digitalWrite(ACTUATOR_PIN,HIGH);
+    }
+    break;
+    case 9: //M8 Actuate OFF (drag pin up)
+    {
+      //Turn off vacuum
+      digitalWrite(ACTUATOR_PIN,LOW);
+    }
+    break;
+#endif //OPENPNP
+
     case 17:
-        LCD_MESSAGEPGM(MSG_NO_MOVE);
+        //LCD_MESSAGEPGM(MSG_NO_MOVE);
         enable_x();
         enable_y();
         enable_z();
@@ -2025,7 +2065,7 @@ void process_commands()
       sprintf_P(time, PSTR("%i min, %i sec"), min, sec);
       SERIAL_ECHO_START;
       SERIAL_ECHOLN(time);
-      lcd_setstatus(time);
+      //lcd_setstatus(time);
 #ifndef OPENPNP
       autotempShutdown();
 #endif //OPENPNP
@@ -2710,7 +2750,7 @@ Sigma_Exit:
       starpos = (strchr(strchr_pointer + 5,'*'));
       if(starpos!=NULL)
         *(starpos)='\0';
-      lcd_setstatus(strchr_pointer + 5);
+      //lcd_setstatus(strchr_pointer + 5);
       break;
     case 114: // M114
       SERIAL_PROTOCOLPGM("X:");
@@ -3080,7 +3120,7 @@ Sigma_Exit:
               manage_heater();
 #endif //OPENPNP
               manage_inactivity();
-              lcd_update();
+              //lcd_update();
             }
           }
         }
@@ -3752,7 +3792,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     break;
     case 999: // M999: Restart after being stopped
       Stopped = false;
-      lcd_reset_alert_level();
+      //lcd_reset_alert_level();
       gcode_LastN = Stopped_gcode_LastN;
       FlushSerialRequestResend();
     break;
@@ -4380,7 +4420,7 @@ void kill()
 #endif
   SERIAL_ERROR_START;
   SERIAL_ERRORLNPGM(MSG_ERR_KILLED);
-  LCD_ALERTMESSAGEPGM(MSG_KILLED);
+  //LCD_ALERTMESSAGEPGM(MSG_KILLED);
   suicide();
   while(1) { /* Intentionally left empty */ } // Wait for reset
 }
@@ -4395,7 +4435,7 @@ void Stop()
     Stopped_gcode_LastN = gcode_LastN; // Save last g_code for restart
     SERIAL_ERROR_START;
     SERIAL_ERRORLNPGM(MSG_ERR_STOPPED);
-    LCD_MESSAGEPGM(MSG_STOPPED);
+    //LCD_MESSAGEPGM(MSG_STOPPED);
   }
 }
 
