@@ -54,7 +54,9 @@
 #include "Marlin.h"
 #include "planner.h"
 #include "stepper.h"
+#ifndef OPENPNP
 #include "temperature.h"
+#endif //OPENPNP
 #include "ultralcd.h"
 #include "language.h"
 
@@ -403,6 +405,7 @@ void plan_init() {
 
 
 
+#ifndef OPENPNP
 
 #ifdef AUTOTEMP
 void getHighESpeed()
@@ -446,6 +449,7 @@ void getHighESpeed()
   setTargetHotend0(t);
 }
 #endif
+#endif //OPENPNP
 
 void check_axes_activity()
 {
@@ -508,6 +512,7 @@ void check_axes_activity()
   analogWrite(FAN_PIN,tail_fan_speed);
   #endif//!FAN_SOFT_PWM
 #endif//FAN_PIN > -1
+#ifndef OPENPNP
 #ifdef AUTOTEMP
   getHighESpeed();
 #endif
@@ -521,6 +526,7 @@ void check_axes_activity()
       analogWrite(HEATER_2_PIN,tail_e_to_p_pressure);
   #endif
 #endif
+#endif //OPENPNP
 }
 
 
@@ -541,7 +547,9 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
   // Rest here until there is room in the buffer.
   while(block_buffer_tail == next_buffer_head)
   {
+#ifndef OPENPNP
     manage_heater(); 
+#endif //OPENPNP
     manage_inactivity(); 
     lcd_update();
   }
@@ -766,6 +774,7 @@ block->steps_y = labs((target[X_AXIS]-position[X_AXIS]) - (target[Y_AXIS]-positi
   block->nominal_speed = block->millimeters * inverse_second; // (mm/sec) Always > 0
   block->nominal_rate = ceil(block->step_event_count * inverse_second); // (step/sec) Always > 0
 
+#ifndef OPENPNP
 #ifdef FILAMENT_SENSOR
   //FMM update ring buffer used for delay with filament measurements
   
@@ -807,6 +816,8 @@ block->steps_y = labs((target[X_AXIS]-position[X_AXIS]) - (target[Y_AXIS]-positi
     
   	  }
 #endif
+#endif //OPENPNP
+
 
 
   // Calculate and limit speed in mm/sec for each axis

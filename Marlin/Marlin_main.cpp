@@ -39,7 +39,9 @@
 #include "ultralcd.h"
 #include "planner.h"
 #include "stepper.h"
+#ifndef OPENPNP
 #include "temperature.h"
+#endif //OPENPNP
 #include "motion_control.h"
 #include "cardreader.h"
 #include "watchdog.h"
@@ -570,7 +572,9 @@ void setup()
   // loads data from EEPROM if available else uses defaults (and resets step acceleration rate)
   Config_RetrieveSettings();
 
+#ifndef OPENPNP
   tp_init();    // Initialize temperature loop
+#endif //OPENPNP
   plan_init();  // Initialize planner;
   watchdog_init();
   st_init();    // Initialize stepper, this enables interrupts!
@@ -636,7 +640,9 @@ void loop()
     bufindr = (bufindr + 1)%BUFSIZE;
   }
   //check heater every n milliseconds
+#ifndef OPENPNP
   manage_heater();
+#endif //OPENPNP
   manage_inactivity();
   checkHitEndstops();
   lcd_update();
@@ -1386,7 +1392,9 @@ void process_commands()
       codenum += millis();  // keep track of when we started waiting
       previous_millis_cmd = millis();
       while(millis()  < codenum ){
+#ifndef OPENPNP
         manage_heater();
+#endif //OPENPNP
         manage_inactivity();
         lcd_update();
       }
@@ -2018,7 +2026,9 @@ void process_commands()
       SERIAL_ECHO_START;
       SERIAL_ECHOLN(time);
       lcd_setstatus(time);
+#ifndef OPENPNP
       autotempShutdown();
+#endif //OPENPNP
       }
       break;
     case 42: //M42 -Change pin status via gcode
@@ -2322,6 +2332,7 @@ Sigma_Exit:
 #endif		// Z_PROBE_REPEATABILITY_TEST 
 #endif		// ENABLE_AUTO_BED_LEVELING
 
+#ifndef OPENPNP
     case 104: // M104
       if(setTargetedHotend(104)){
         break;
@@ -2333,9 +2344,11 @@ Sigma_Exit:
 #endif
       setWatch();
       break;
+#endif //OPENPNP
     case 112: //  M112 -Emergency Stop
       kill();
       break;
+#ifndef OPENPNP
     case 140: // M140 set bed temp
       if (code_seen('S')) setTargetBed(code_value());
       break;
@@ -2578,6 +2591,7 @@ Sigma_Exit:
           break;
       #endif //HEATER_2_PIN
     #endif
+#endif //OPENPNP
 
     #if defined(PS_ON_PIN) && PS_ON_PIN > -1
       case 80: // M80 - Turn on Power Supply
@@ -2601,7 +2615,9 @@ Sigma_Exit:
       #endif
 
       case 81: // M81 - Turn off Power Supply
+#ifndef OPENPNP
         disable_heater();
+#endif //OPENPNP
         st_synchronize();
         disable_e0();
         disable_e1();
@@ -3060,7 +3076,9 @@ Sigma_Exit:
             }
 
             while(digitalRead(pin_number) != target){
+#ifndef OPENPNP
               manage_heater();
+#endif //OPENPNP
               manage_inactivity();
               lcd_update();
             }
@@ -3232,6 +3250,7 @@ Sigma_Exit:
     }
     break;
 	#endif
+#ifndef OPENPNP
     case 303: // M303 PID autotune
     {
       float temp = 150.0;
@@ -3245,6 +3264,7 @@ Sigma_Exit:
       PID_autotune(temp, e, c);
     }
     break;
+#endif //OPENPNP
 	#ifdef SCARA
 	case 360:  // M360 SCARA Theta pos1
       SERIAL_ECHOLN(" Cal: Theta 0 ");
@@ -3376,6 +3396,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     }
     break; 
     
+#ifndef OPENPNP
     case 405:  //M405 Turn on filament sensor for control 
     {
     
@@ -3421,7 +3442,8 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     } 
     break; 
     #endif
-    
+#endif //OPENPNP
+
 
 
 
@@ -4342,7 +4364,9 @@ void manage_inactivity()
 void kill()
 {
   cli(); // Stop interrupts
+#ifndef OPENPNP
   disable_heater();
+#endif //OPENPNP
 
   disable_x();
   disable_y();
@@ -4363,7 +4387,9 @@ void kill()
 
 void Stop()
 {
+#ifndef OPENPNP
   disable_heater();
+#endif //OPENPNP
   if(Stopped == false) {
     Stopped = true;
     Stopped_gcode_LastN = gcode_LastN; // Save last g_code for restart

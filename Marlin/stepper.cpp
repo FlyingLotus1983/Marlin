@@ -24,7 +24,9 @@
 #include "Marlin.h"
 #include "stepper.h"
 #include "planner.h"
+#ifndef OPENPNP
 #include "temperature.h"
+#endif //OPENPNP
 #include "ultralcd.h"
 #include "language.h"
 #include "cardreader.h"
@@ -972,7 +974,9 @@ void st_init()
 void st_synchronize()
 {
     while( blocks_queued()) {
+#ifndef OPENPNP
     manage_heater();
+#endif //OPENPNP
     manage_inactivity();
     lcd_update();
   }

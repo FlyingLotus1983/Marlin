@@ -40,6 +40,8 @@
 //===========================================================================
 //=============================public variables============================
 //===========================================================================
+
+#ifndef OPENPNP
 int target_temperature[EXTRUDERS] = { 0 };
 int target_temperature_bed = 0;
 int current_temperature_raw[EXTRUDERS] = { 0 };
@@ -167,6 +169,7 @@ unsigned long watchmillis[EXTRUDERS] = ARRAY_BY_EXTRUDERS(0,0,0);
 #ifdef FILAMENT_SENSOR
   static int meas_shift_index;  //used to point to a delayed sample in buffer for filament width sensor
 #endif
+
 //===========================================================================
 //=============================   functions      ============================
 //===========================================================================
@@ -768,6 +771,8 @@ return(filament_width_nominal/temp*100);
 
 void tp_init()
 {
+
+  
 #if (MOTHERBOARD == 80) && ((TEMP_SENSOR_0==-1)||(TEMP_SENSOR_1==-1)||(TEMP_SENSOR_2==-1)||(TEMP_SENSOR_BED==-1))
   //disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
   MCUCR=(1<<JTD); 
@@ -967,6 +972,7 @@ void tp_init()
 #endif
   }
 #endif //BED_MAXTEMP
+
 }
 
 void setWatch() 
@@ -1508,4 +1514,4 @@ float unscalePID_d(float d)
 
 #endif //PIDTEMP
 
-
+#endif //OPENPNP
